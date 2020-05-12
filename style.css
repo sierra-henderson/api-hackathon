@@ -1,0 +1,133 @@
+* {
+  margin: 0;
+  font-family: 'Open Sans'
+}
+
+.hero {
+  margin: 0 auto;
+  text-align: center;
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('images/pizza.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.hero > * {
+  margin-bottom: 30px;
+  font-family: 'Open Sans';
+  color: white
+}
+
+.hero h1 {
+  font-family: Hillray;
+  color: white;
+  letter-spacing: 8px;
+  font-weight: 400;
+  font-size: 3rem;
+}
+
+.hero img {
+  height: 80px;
+}
+
+.hero input {
+  height: 5vh;
+  width: 30vw;
+  border-radius: 100px;
+  border: none;
+  margin-right: 20px;
+  padding-left: 40px;
+  font-size: 0.8rem;
+}
+
+.hero button {
+  height: 5vh;
+  width: 150px;
+  font-size: 1.2rem;
+  border-radius: 0.5rem;
+}
+
+.about {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 30vh;
+}
+
+.about h2 {
+  font-family: Hillray;
+  margin-bottom: 30px;
+}
+
+.city-page-hero {
+  margin: 0 auto;
+  text-align: center;
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+}
+
+.city-page-hero h1 {
+  font-family: Hillray;
+  font-size: 3rem;
+  letter-spacing: 5px;
+}
+
+.categories {
+  text-align: center;
+  margin: 40px auto;
+}
+
+.categories a {
+  text-decoration: none;
+  color: black;
+  padding: 10px 30px;
+  margin-right: 20px;
+  text-transform: uppercase;
+  transition: all 0.5s;
+}
+
+.categories a:hover {
+  background-color: aquamarine;
+  border-radius: 100px;
+}
+
+.categories a:active {
+  background-color: aquamarine;
+  border-radius: 100px;
+}
+
+.card {
+  margin: 0 auto;
+  height: 300px;
+  width: 300px;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+}
+
+.card-image {
+  height: 80%;
+  background-image: url(images/cafe-gourmande-258201_1920.jpg);
+}
+
+.card-text {
+  height: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-text button {
+
+}
+
+.hidden {
+  display: none;
+}

@@ -1,0 +1,13 @@
+@font-face {
+  font-family: 'George';
+  font-style: normal;
+  font-weight: normal;
+  src: url('George.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Hillray';
+  font-style: normal;
+  font-weight: normal;
+  src: url('Hillray-Regular.otf') format('opentype');
+}

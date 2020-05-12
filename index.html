@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="fonts/fonts.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="landing-page">
+    <div class="hero">
+      <img src="images/foodie-logo.svg" alt="">
+      <h1>food.ie</h1>
+      <p>The delicious way to travel</p>
+      <div class="search-bar">
+        <input type="text" id="searchBar" placeholder="Search by city">
+        <button id="searchButton">Find flavor!</button>
+      </div>
+    </div>
+      <div class="about">
+        <h2>What is food.ie?</h2>
+        <p>A food-based travel app that allows you to find off-the-beaten path restaurants and food experiences in your chosen destination. Curate a delicious vacation you will never forget!</p>
+      </div>
+  </div>
+  <div class="city-page hidden">
+    <nav></nav>
+    <div class="city-page-hero">
+      <h1></h1>
+    </div>
+    <div class="categories">
+      <a href="#" id="restaurants">Restaurants</a>
+      <a href="#" id="toursAndTastings">Tours/Tastings</a>
+      <a href="#" id="cookingClasses">Cooking Classes</a>
+    </div>
+    <div class="results">
+      <div class="card">
+        <div class="card-image"></div>
+        <div class="card-text">
+          <h2>Flamingo's Mexican Grill</h2>
+          <button>More Info</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="business-modal hidden">
+
+  </div>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9rR2OpfbMIvdGDuyVKeJO0dWX8xSmey0&libraries=places"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
