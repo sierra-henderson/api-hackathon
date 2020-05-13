@@ -63,6 +63,22 @@
   margin-bottom: 30px;
 }
 
+nav {
+  display: flex;
+  justify-content: space-between;
+  background-color: #F2D2B6;
+  padding: 20px;
+}
+
+nav h2 {
+  font-family: Hillray;
+  display: inline-block;
+}
+
+nav i {
+  color: black;
+}
+
 .city-page-hero {
   margin: 0 auto;
   text-align: center;
@@ -99,33 +115,118 @@
   border-radius: 100px;
 }
 
+.active {
+  background-color: aquamarine;
+  border-radius: 100px;
+}
+
 .categories a:active {
   background-color: aquamarine;
   border-radius: 100px;
 }
 
+.results {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.results h2 {
+  width: 100%;
+  text-align: center;
+}
+
+.results-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.results-header button {
+  background-color: aquamarine;
+  border-radius: 100px;
+  padding: 10px 30px;
+  border: none;
+  text-transform: uppercase;
+}
+
 .card {
-  margin: 0 auto;
-  height: 300px;
-  width: 300px;
+  margin: 20px 20px 0;
+  width: 250px;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
 }
 
 .card-image {
-  height: 80%;
-  background-image: url(images/cafe-gourmande-258201_1920.jpg);
+  height: 200px;
+  background-size: cover;
 }
 
 .card-text {
-  height: 20%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.card-text button {
+.card-text h3 {
+  margin-bottom: 10px;
+  text-transform: capitalize;
+}
 
+.card-text button {
+  border: none;
+  background-color: bisque;
+  padding: 10px 20px;
+  border-radius: 0.5rem;
+  font-family: 'Open Sans';
+  margin-bottom: 10px;
+}
+
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  z-index: 3;
+}
+
+#closeModalButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.modal-content {
+  width: 400px;
+  background-color: white;
+  position: relative;
+}
+
+.modal-image {
+  height: 200px;
+  background-color: royalblue;
+  background-size: cover;
+}
+
+.modal-text {
+  padding: 20px 10px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.row.like {
+  align-items: center;
 }
 
 .hidden {
