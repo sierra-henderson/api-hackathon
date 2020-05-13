@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <script src="https://kit.fontawesome.com/d9e5edd868.js" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="style.css">
@@ -25,7 +26,12 @@
       </div>
   </div>
   <div class="city-page hidden">
-    <nav></nav>
+    <nav>
+        <h2>food.ie</h2>
+        <div id="likesBar">
+          <i class="fas fa-heart fa-lg"></i>
+        </div>
+    </nav>
     <div class="city-page-hero">
       <h1></h1>
     </div>
@@ -35,17 +41,27 @@
       <a href="#" id="cookingClasses">Cooking Classes</a>
     </div>
     <div class="results">
-      <div class="card">
-        <div class="card-image"></div>
-        <div class="card-text">
-          <h2>Flamingo's Mexican Grill</h2>
-          <button>More Info</button>
+    </div>
+  </div>
+  <div class="modal-overlay hidden">
+    <div class="modal-content">
+      <i class="fas fa-times" id="closeModalButton"></i>
+      <div class="modal-image"></div>
+      <div class="modal-text">
+        <div class="row">
+          <h3 id="name"></h3>
+          <div class="stars"></div>
+        </div>
+        <div class="row">
+          <p id="price"></p>
+          <p id="category"></p>
+        </div>
+        <div class="row like">
+          <div class="address"></div>
+          <div class="likeButton"></div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="business-modal hidden">
-
   </div>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9rR2OpfbMIvdGDuyVKeJO0dWX8xSmey0&libraries=places"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
