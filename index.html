@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>food.ie</title>
   <script src="https://kit.fontawesome.com/d9e5edd868.js" crossorigin="anonymous"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -40,7 +40,8 @@
       <a href="#" id="toursAndTastings">Tours/Tastings</a>
       <a href="#" id="cookingClasses">Cooking Classes</a>
     </div>
-    <div class="results">
+    <div class="results-container">
+      <div class="results"></div>
     </div>
   </div>
   <div class="modal-overlay hidden">
@@ -58,10 +59,21 @@
         </div>
         <div class="row like">
           <div class="address"></div>
-          <div class="likeButton"></div>
+          <div class="likeButton">
+            <i id="likeButton" class="fas fa-heart fa-2x"></i>
+          </div>
         </div>
       </div>
     </div>
+  </div>
+  <div class="likes-page hidden">
+    <h2>food.ie</h2>
+    <h1 id="likesCityHeader"></h1>
+    <div id="map"></div>
+    <div class="likesList">
+      <h2>Saved Places</h2>
+    </div>
+    <button id="backToCity">Back To City Page</button>
   </div>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9rR2OpfbMIvdGDuyVKeJO0dWX8xSmey0&libraries=places"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
