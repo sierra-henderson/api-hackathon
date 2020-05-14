@@ -1,6 +1,7 @@
 var city;
 var map;
 var service;
+var markers = [];
 var searchTerm;
 var likesArr = []
 var latlang;
@@ -90,7 +91,7 @@ function searchSuccess(data) {
         method: 'GET',
         url: `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?location=${city}`,
         headers: {
-          Authorization: 'Bearer st9BoGopP7a1xK-3J4PC9Wb22d1k5D-vQty1k2niJ_3QISDKtj-9MkhOAg6rk4NChhX2pMsdd9aZk7MaXBpguqKrRnYgFYDAGWNRMQlIQOag-LVi7E0xcgJ54rS5XnYx'
+          Authorization: 'Bearer ' + yelpKey
         },
         success: function() {
           landingPage.classList.add('hidden');
@@ -116,7 +117,7 @@ function createImage(place) {
   $.ajax({
     method: "GET",
     headers: {
-      Authorization: "Client-ID wJINoYlAErEt2iN9vdlMlVRA0hQS4N4hSz0mYyt0SRA",
+      Authorization: "Client-ID " + unsplashKey,
       'Accept-Version': 'v1'
     },
     url: `https://api.unsplash.com/search/photos?query=${searchTerm}&orientation=landscape&client_id=wJINoYlAErEt2iN9vdlMlVRA0hQS4N4hSz0mYyt0SRA`,
@@ -126,7 +127,7 @@ function createImage(place) {
 }
 
 function photoSuccess(photo) {
-  cityPageHero.style.backgroundImage = `url(${photo.results[0].urls.full})`
+  cityPageHero.style.backgroundImage = `linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${photo.results[0].urls.full})`
 }
 
 function photoFail(err) {
@@ -158,7 +159,7 @@ function yelpQuery(arr) {
         method: 'GET',
         url: `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=off the beaten path&categories=${category}&location=${city}`,
         headers: {
-          Authorization: 'Bearer st9BoGopP7a1xK-3J4PC9Wb22d1k5D-vQty1k2niJ_3QISDKtj-9MkhOAg6rk4NChhX2pMsdd9aZk7MaXBpguqKrRnYgFYDAGWNRMQlIQOag-LVi7E0xcgJ54rS5XnYx'
+          Authorization: 'Bearer ' + yelpKey
         },
         success: function (result) {
           if (result.businesses.length > 0) {
@@ -174,7 +175,7 @@ function yelpQuery(arr) {
         method: 'GET',
         url: `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?categories=${category}&location=${city}&limit=50`,
         headers: {
-          Authorization: 'Bearer st9BoGopP7a1xK-3J4PC9Wb22d1k5D-vQty1k2niJ_3QISDKtj-9MkhOAg6rk4NChhX2pMsdd9aZk7MaXBpguqKrRnYgFYDAGWNRMQlIQOag-LVi7E0xcgJ54rS5XnYx'
+          Authorization: 'Bearer ' + yelpKey
         },
         success: function (result) {
           if (result.businesses.length > 0) {
@@ -207,12 +208,12 @@ function makeCards(type, data) {
   resultsHeader.className = 'results-header'
   results.append(resultsHeader)
   resultsHeader.append(h2)
-  if (title === 'Restaurants') {
-    var filterButton = document.createElement('button');
-    filterButton.textContent = 'Filter'
-    resultsHeader.append(filterButton);
-    filterButton.addEventListener('click', filterModal);
-  }
+  // if (title === 'Restaurants') {
+  //   var filterButton = document.createElement('button');
+  //   filterButton.textContent = 'Filter'
+  //   resultsHeader.append(filterButton);
+  //   filterButton.addEventListener('click', filterModal);
+  // }
   results.append(resultsHeader)
   data.forEach(el => {
     var cardImageDiv = document.createElement('div')
@@ -343,13 +344,21 @@ function loadLikesPage() {
     var newCategoryStr = categoryStr.replace(/,$/, "");
     categories.textContent = newCategoryStr;
     secondRow.append(price, categories);
+    var deleteButtonContainer = document.createElement('div');
+    var deleteItemButton = document.createElement('i');
+    deleteItemButton.className = 'fas fa-trash fa-lg';
+    deleteItemButton.addEventListener('click', function() {
+      deleteItem(el.id, el.name);
+    });
+    deleteButtonContainer.append(deleteItemButton)
     var likesText = document.createElement('div');
     likesText.className = 'likes-text';
-    likesText.append(firstRow, secondRow)
+    likesText.append(firstRow, secondRow, deleteButtonContainer)
     var likeContainer = document.createElement('div');
     likeContainer.className = 'like-container';
     likeContainer.append(likesPhoto, likesText);
     likesList.append(likeContainer);
+
   })
   console.log(likesArr);
   initMap(likesArr)
@@ -359,7 +368,7 @@ function initMap(arr) {
   var place = new google.maps.LatLng(arr[0].north, arr[0].east);
 
   map = new google.maps.Map(
-    mapContainer, { center: place, zoom: 15 });
+    mapContainer, { center: place, zoom: 12 });
 
   arr.forEach(el => {
     var request = {
@@ -405,11 +414,14 @@ function initMap(arr) {
 //   });
 // }
 
+
+
 function createMarker(place, infowindow) {
   var marker = new google.maps.Marker({
     position: place.geometry.location,
     map: map
   });
+  markers.push(marker);
   marker.addListener('click', function () {
     infowindow.open(map, marker);
   });
@@ -420,8 +432,24 @@ function goBackToCityPage() {
   cityPage.classList.remove('hidden');
 }
 
+function deleteItem(id, name) {
+  likesArr.forEach((el, i) => {
+    if (el.id === id) {
+      likesArr.splice(i, 1);
+      markers[i].setMap(null);
+    }
+  })
+  var likeContainer = document.querySelectorAll('.like-container')
+    likeContainer.forEach((item, index) => {
+      if (item.querySelector('h3').textContent === name) {
+        item.parentElement.removeChild(likeContainer[index]);
+      }
+    })
+
+  }
 
 
-function filterModal() {
-  console.log('hello')
-}
+
+// function filterModal() {
+
+// }
