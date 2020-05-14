@@ -3,6 +3,16 @@
   font-family: 'Open Sans'
 }
 
+.hero button,
+.card-text button,
+.likeButton i,
+.likesBar i,
+.likes-text i,
+#backToCity,
+#closeModalButton {
+  cursor: pointer;
+}
+
 .hero {
   margin: 0 auto;
   text-align: center;
@@ -52,6 +62,10 @@
   background-color: rgb(238, 228, 220);
 }
 
+.hero button:hover {
+  background-color: rgb(238, 205, 178);
+}
+
 .about {
   text-align: center;
   display: flex;
@@ -71,7 +85,7 @@
   border: 1px solid red;
   background-color: white;
   color: red;
-  width: 50%
+  width: 40%;
   text-align: center;
   margin: 0 auto;
   padding: 10px 0;
@@ -96,9 +110,12 @@ nav h2 {
 }
 
 nav i {
-  color: black;
+  color: #243540;
 }
 
+nav i:hover {
+  color: black;
+}
 
 .city-page-hero {
   margin: 0 auto;
@@ -113,8 +130,9 @@ nav i {
 
 .city-page-hero h1 {
   font-family: Hillray;
-  font-size: 3rem;
+  font-size: 4rem;
   letter-spacing: 5px;
+  color: white;
 }
 
 .categories {
@@ -207,13 +225,17 @@ nav i {
 
 .card-text button {
   border: none;
-  background-color: #D94F00;
+  background-color: #D9773F;
   padding: 10px 20px;
   border-radius: 0.5rem;
   font-family: 'Open Sans';
   margin-bottom: 10px;
   font-size: 0.8rem;
   font-weight: 700;
+}
+
+.card-text button:hover {
+  background-color: #D94F00;
 }
 
 .modal-overlay {
@@ -252,6 +274,10 @@ nav i {
 }
 
 .likeButton i {
+  color: #D94D2E;
+}
+
+.likeButton i:hover {
   color: #D92D07;
 }
 
@@ -264,10 +290,6 @@ nav i {
 
 .row.like {
   align-items: center;
-}
-
-.likes-page {
-
 }
 
 .likes-page h2 {
@@ -284,18 +306,18 @@ nav i {
   width: 85%;
   max-width: 900px;
   margin: 0 auto;
-  padding-bottom: 50px;
 }
 
 .likesList h2 {
   border-bottom: 1px solid #bbbbbb;
   padding-left: 0;
   padding-bottom: 5px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .like-container {
   display: flex;
+  margin-bottom: 20px;
 }
 
 .likes-photo {
@@ -315,6 +337,33 @@ nav i {
   height: 400px;
   width: 50%;
   margin: 40px auto;
+}
+
+.likes-text i {
+  color: #243540
+}
+
+.likes-text i:hover {
+  color: black;
+}
+
+.city-button-container {
+  text-align: center;
+}
+
+#backToCity {
+  color: white;
+  background-color: #D94D2E;
+  border-radius: 100px;
+  padding: 10px 30px;
+  border: none;
+  text-transform: uppercase;
+  font-size: 1rem;
+  margin-bottom: 20px
+}
+
+#backToCity:hover {
+  background-color: #D92D07;
 }
 
 .hidden {
