@@ -1,41 +1,41 @@
-var city;
-var map;
-var service;
-var markers = [];
-var searchTerm;
-var likesArr = []
-var latlang;
-var currentSelectedRestaurant = [];
-var header = document.querySelector('.city-page-hero h1');
-var landingPage = document.querySelector('.landing-page');
-var cityPage = document.querySelector('.city-page')
-var results = document.querySelector('.results')
-var searchBar = document.getElementById('searchBar');
-var searchButton = document.getElementById('searchButton');
-var cityPageHero = document.querySelector('.city-page-hero');
-var modalOverlay = document.querySelector('.modal-overlay');
-var landingPageHero = document.querySelector('.hero');
-var restaurantsButton = document.getElementById('restaurants');
-var toursAndTastingsButton = document.getElementById('toursAndTastings');
-var cookingClassesButton = document.getElementById('cookingClasses');
-var likesBar = document.getElementById('likesBar');
-var likesCityHeader = document.getElementById('likesCityHeader')
-var categories = document.querySelector('.categories')
-var cityPageHeader = document.querySelector('.city-page-hero h1');
-var likesPage = document.querySelector('.likes-page');
-var mapContainer = document.getElementById('map');
-var likesList = document.querySelector('.likesList');
-var backToCityButton = document.getElementById('backToCity');
+let city = null;
+let map = null;
+let service = null;
+const markers = [];
+let searchTerm = null;
+const likesArr = []
+let latlang = null;
+let currentSelectedRestaurant = [];
+const header = document.querySelector('.city-page-hero h1');
+const landingPage = document.querySelector('.landing-page');
+const cityPage = document.querySelector('.city-page')
+const results = document.querySelector('.results')
+const searchBar = document.getElementById('searchBar');
+const searchButton = document.getElementById('searchButton');
+const cityPageHero = document.querySelector('.city-page-hero');
+const modalOverlay = document.querySelector('.modal-overlay');
+const landingPageHero = document.querySelector('.hero');
+const restaurantsButton = document.getElementById('restaurants');
+const toursAndTastingsButton = document.getElementById('toursAndTastings');
+const cookingClassesButton = document.getElementById('cookingClasses');
+const likesBar = document.getElementById('likesBar');
+const likesCityHeader = document.getElementById('likesCityHeader')
+const categories = document.querySelector('.categories')
+const cityPageHeader = document.querySelector('.city-page-hero h1');
+const likesPage = document.querySelector('.likes-page');
+const mapContainer = document.getElementById('map');
+const likesList = document.querySelector('.likesList');
+const backToCityButton = document.getElementById('backToCity');
 
 // Queries for modal
-var modalImage = document.querySelector('.modal-image')
-var businessName = document.getElementById('name')
-var starsContainer = document.querySelector('.stars')
-var price = document.getElementById('price')
-var category = document.getElementById('category')
-var address = document.querySelector('.address')
-var likeButton = document.getElementById('likeButton')
-var closeModalButton = document.getElementById('closeModalButton')
+const modalImage = document.querySelector('.modal-image')
+const businessName = document.getElementById('name')
+const starsContainer = document.querySelector('.stars')
+const price = document.getElementById('price')
+const category = document.getElementById('category')
+const address = document.querySelector('.address')
+const likeButton = document.getElementById('likeButton')
+const closeModalButton = document.getElementById('closeModalButton')
 
 searchButton.addEventListener('click', recordQuery);
 
@@ -60,11 +60,11 @@ likeButton.addEventListener('click', addToLikes);
 backToCityButton.addEventListener('click', goBackToCityPage);
 
 function searchQuery(query) {
-  var request = {
+  const request = {
     query: query,
     fields: ['name', 'place_id']
   }
-  var service = new google.maps.places.PlacesService(header);
+  const service = new google.maps.places.PlacesService(header);
   service.findPlaceFromQuery(request, function(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       searchSuccess(results[0].place_id);
@@ -78,11 +78,11 @@ function recordQuery() {
 }
 
 function searchSuccess(data) {
-  var request = {
+  const request = {
     placeId: data,
     fields: ['formatted_address', 'geometry']
   }
-  var service = new google.maps.places.PlacesService(header);
+  const service = new google.maps.places.PlacesService(header);
   service.getDetails(request, callback)
   function callback(place, status) {
     if (status == google.maps.places.PlacesServiceStatus.OK) {
@@ -102,7 +102,7 @@ function searchSuccess(data) {
           yelpQuery(['restaurants'])
         },
         error: function (err) {
-          var div = document.createElement('div');
+          const div = document.createElement('div');
           div.className = 'error-modal'
           div.textContent = 'Sorry! This city is not supported by food.ie at this time.'
           landingPageHero.append(div);
@@ -139,7 +139,7 @@ function closeModal() {
 }
 
 function yelpQuery(arr) {
-  for (var i = 0; i < categories.children.length; i++) {
+  for (let i = 0; i < categories.children.length; i++) {
     categories.children[i].classList.remove('active')
   }
   if (arr.indexOf('restaurants') > -1) {
@@ -149,15 +149,17 @@ function yelpQuery(arr) {
   } else if (arr.indexOf('cookingclasses') > -1) {
     cookingClassesButton.classList.add('active');
   }
-  var resultsChildren = results.children;
+  const resultsChildren = results.children;
   while (resultsChildren.length > 0) {
     results.removeChild(resultsChildren[0]);
   }
   arr.forEach(category => {
-    if (category === 'restaurants') {
+    let url = category === 'restaurants'
+      ? `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=off the beaten path&categories=${category}&location=${city}`
+      : `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?categories=${category}&location=${city}&limit=50`
       $.ajax({
         method: 'GET',
-        url: `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=off the beaten path&categories=${category}&location=${city}`,
+        url,
         headers: {
           Authorization: 'Bearer ' + yelpKey
         },
@@ -170,30 +172,13 @@ function yelpQuery(arr) {
           console.log("ErRoR:", err)
         }
       })
-    } else {
-      $.ajax({
-        method: 'GET',
-        url: `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?categories=${category}&location=${city}&limit=50`,
-        headers: {
-          Authorization: 'Bearer ' + yelpKey
-        },
-        success: function (result) {
-          if (result.businesses.length > 0) {
-            makeCards(category, result.businesses);
-          }
-        },
-        error: function (err) {
-          console.log("ErRoR:", err)
-        }
-      })
-    }
   })
 }
 
 function makeCards(type, data) {
-  var h2 = document.createElement('h2');
-  var title = type;
-  var titles = {
+  const h2 = document.createElement('h2');
+  let title = type;
+  const titles = {
     foodtours: 'Food Tours',
     winetastingroom: 'Wine Tasting',
     cheesetastingclasses: 'Cheese Tasting',
@@ -204,32 +189,32 @@ function makeCards(type, data) {
     title = titles[type]
   }
   h2.textContent = title;
-  var resultsHeader = document.createElement('div');
+  const resultsHeader = document.createElement('div');
   resultsHeader.className = 'results-header'
   results.append(resultsHeader)
   resultsHeader.append(h2)
   // if (title === 'Restaurants') {
-  //   var filterButton = document.createElement('button');
+  //   const filterButton = document.createElement('button');
   //   filterButton.textContent = 'Filter'
   //   resultsHeader.append(filterButton);
   //   filterButton.addEventListener('click', filterModal);
   // }
   results.append(resultsHeader)
   data.forEach(el => {
-    var cardImageDiv = document.createElement('div')
+    const cardImageDiv = document.createElement('div')
     cardImageDiv.className = 'card-image';
     cardImageDiv.style.backgroundImage = `url(${el.image_url})`
-    var cardTextDiv = document.createElement('div')
+    const cardTextDiv = document.createElement('div')
     cardTextDiv.className = 'card-text'
-    var h3 = document.createElement('h3')
+    const h3 = document.createElement('h3')
     h3.textContent = el.name;
-    var button = document.createElement('button')
+    const button = document.createElement('button')
     button.addEventListener('click', function() {
       popModal(el, title)
     })
     button.textContent = 'More Info'
     cardTextDiv.append(h3, button);
-    var cardDiv = document.createElement('div')
+    const cardDiv = document.createElement('div')
     cardDiv.className = 'card'
     cardDiv.append(cardImageDiv, cardTextDiv);
     results.append(cardDiv);
@@ -240,28 +225,28 @@ function popModal(data, title) {
   modalOverlay.classList.remove('hidden');
   modalImage.style.backgroundImage = `url("${data.image_url}")`;
   businessName.textContent = data.name;
-  var fullStars = Math.floor(data.rating);
+  const fullStars = Math.floor(data.rating);
   if (starsContainer.children.length > 0) {
     while (starsContainer.children.length > 0) {
       starsContainer.removeChild(starsContainer.children[0]);
     }
   }
-  for (var i = 0; i < fullStars; i++) {
-    var star = document.createElement('i');
+  for (let i = 0; i < fullStars; i++) {
+    const star = document.createElement('i');
     star.className = 'fas fa-star'
     starsContainer.append(star);
   }
   if (data.rating - fullStars === 0.5) {
-    var halfStar = document.createElement('i');
+    const halfStar = document.createElement('i');
     halfStar.className = 'fas fa-star-half'
     starsContainer.append(halfStar);
   }
   price.textContent = data.price;
-  var categories = "";
+  let categories = "";
   data.categories.forEach(el => {
     categories += " " + el.title + ","
   })
-  var newCategories = categories.replace(/,$/, "");
+  const newCategories = categories.replace(/,$/, "");
   category.textContent = newCategories
   if (address.children.length > 0) {
     while (address.children.length > 0) {
@@ -269,7 +254,7 @@ function popModal(data, title) {
     }
   }
   data.location.display_address.forEach(line => {
-    var p = document.createElement('p')
+    const p = document.createElement('p')
     p.textContent = line;
     address.append(p)
   })
@@ -277,10 +262,9 @@ function popModal(data, title) {
 }
 
 function addToLikes() {
-  var data = currentSelectedRestaurant[0];
-  var title = currentSelectedRestaurant[1];
-  var fullAddress = data.location.display_address.join(" ");
-  var likeObj = {
+  const [data, title] = currentSelectedRestaurant
+  const fullAddress = data.location.display_address.join(" ");
+  const likeObj = {
     address: fullAddress,
     name: data.name,
     rating: data.rating,
@@ -309,52 +293,52 @@ function loadLikesPage() {
     }
   }
   likesArr.forEach(el => {
-    var likesPhoto = document.createElement('div');
+    const likesPhoto = document.createElement('div');
     likesPhoto.className = 'likes-photo';
     likesPhoto.style.backgroundImage = `url(${el.image})`;
-    var firstRow = document.createElement('div');
+    const firstRow = document.createElement('div');
     firstRow.className = 'row';
-    var placeName = document.createElement('h3')
+    const placeName = document.createElement('h3')
     placeName.textContent = el.name;
-    var starDiv = document.createElement('div');
+    const starDiv = document.createElement('div');
     starDiv.className = 'stars';
-    var fullStars = Math.floor(el.rating);
-    for (var i = 0; i < fullStars; i++) {
-      var star = document.createElement('i');
+    const fullStars = Math.floor(el.rating);
+    for (let i = 0; i < fullStars; i++) {
+      const star = document.createElement('i');
       star.className = 'fas fa-star'
       starDiv.append(star);
     }
     if (el.rating - fullStars === 0.5) {
-      var halfStar = document.createElement('i');
+      const halfStar = document.createElement('i');
       halfStar.className = 'fas fa-star-half'
       starDiv.append(halfStar);
     }
     firstRow.append(placeName, starDiv)
-    var secondRow = document.createElement('div');
+    const secondRow = document.createElement('div');
     secondRow.className = 'row'
-    var price = document.createElement('p');
+    const price = document.createElement('p');
     price.setAttribute("id", "likePrice");
     price.textContent = el.price;
-    var categories = document.createElement('p');
+    const categories = document.createElement('p');
     categories.setAttribute("id", "likeCategory");
-    var categoryStr = "";
+    let categoryStr = "";
     el.categories.forEach(cat => {
       categoryStr += " " + cat.title + ","
     })
-    var newCategoryStr = categoryStr.replace(/,$/, "");
+    const newCategoryStr = categoryStr.replace(/,$/, "");
     categories.textContent = newCategoryStr;
     secondRow.append(price, categories);
-    var deleteButtonContainer = document.createElement('div');
-    var deleteItemButton = document.createElement('i');
+    const deleteButtonContainer = document.createElement('div');
+    const deleteItemButton = document.createElement('i');
     deleteItemButton.className = 'fas fa-trash fa-lg';
     deleteItemButton.addEventListener('click', function() {
       deleteItem(el.id, el.name);
     });
     deleteButtonContainer.append(deleteItemButton)
-    var likesText = document.createElement('div');
+    const likesText = document.createElement('div');
     likesText.className = 'likes-text';
     likesText.append(firstRow, secondRow, deleteButtonContainer)
-    var likeContainer = document.createElement('div');
+    const likeContainer = document.createElement('div');
     likeContainer.className = 'like-container';
     likeContainer.append(likesPhoto, likesText);
     likesList.append(likeContainer);
@@ -365,20 +349,20 @@ function loadLikesPage() {
 }
 
 function initMap(arr) {
-  var place = new google.maps.LatLng(arr[0].north, arr[0].east);
+  const place = new google.maps.LatLng(arr[0].north, arr[0].east);
 
   map = new google.maps.Map(
     mapContainer, { center: place, zoom: 12 });
 
   arr.forEach(el => {
-    var request = {
+    const request = {
       query: el.address,
       fields: ['name', 'geometry'],
     };
-    var infowindow = new google.maps.InfoWindow({
+    const infowindow = new google.maps.InfoWindow({
       content: el.name
     });
-    var service = new google.maps.places.PlacesService(map);
+    const service = new google.maps.places.PlacesService(map);
 
     service.findPlaceFromQuery(request, function (results, status) {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -389,35 +373,8 @@ function initMap(arr) {
   })
 }
 
-// function initMap() {
-//   var sydney = new google.maps.LatLng(-33.867, 151.195);
-
-//   infowindow = new google.maps.InfoWindow();
-
-//   map = new google.maps.Map(
-//     mapContainer, { center: sydney, zoom: 15 });
-
-//   var request = {
-//     query: 'Museum of Contemporary Art Australia',
-//     fields: ['name', 'geometry'],
-//   };
-
-//   var service = new google.maps.places.PlacesService(map);
-
-//   service.findPlaceFromQuery(request, function (results, status) {
-//     if (status === google.maps.places.PlacesServiceStatus.OK) {
-//       for (var i = 0; i < results.length; i++) {
-//         createMarker(results[i]);
-//       }
-//       map.setCenter(results[0].geometry.location);
-//     }
-//   });
-// }
-
-
-
 function createMarker(place, infowindow) {
-  var marker = new google.maps.Marker({
+  const marker = new google.maps.Marker({
     position: place.geometry.location,
     map: map
   });
@@ -439,7 +396,7 @@ function deleteItem(id, name) {
       markers[i].setMap(null);
     }
   })
-  var likeContainer = document.querySelectorAll('.like-container')
+  const likeContainer = document.querySelectorAll('.like-container')
     likeContainer.forEach((item, index) => {
       if (item.querySelector('h3').textContent === name) {
         item.parentElement.removeChild(likeContainer[index]);
@@ -447,9 +404,3 @@ function deleteItem(id, name) {
     })
 
   }
-
-
-
-// function filterModal() {
-
-// }
