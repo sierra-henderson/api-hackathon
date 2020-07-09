@@ -59,6 +59,11 @@ likeButton.addEventListener('click', addToLikes);
 
 backToCityButton.addEventListener('click', goBackToCityPage);
 
+function recordQuery() {
+  searchTerm = searchBar.value;
+  searchQuery(searchTerm);
+}
+
 function searchQuery(query) {
   const request = {
     query: query,
@@ -70,11 +75,6 @@ function searchQuery(query) {
       searchSuccess(results[0].place_id);
     }
   })
-}
-
-function recordQuery() {
-  searchTerm = searchBar.value;
-  searchQuery(searchTerm);
 }
 
 function searchSuccess(data) {
@@ -262,6 +262,7 @@ function popModal(data, title) {
 }
 
 function addToLikes() {
+  likeButton.className = 'fas fa-heart fa-2x'
   const [data, title] = currentSelectedRestaurant
   const fullAddress = data.location.display_address.join(" ");
   const likeObj = {
@@ -297,7 +298,7 @@ function loadLikesPage() {
     likesPhoto.className = 'likes-photo';
     likesPhoto.style.backgroundImage = `url(${el.image})`;
     const firstRow = document.createElement('div');
-    firstRow.className = 'row';
+    firstRow.className = 'row first-row';
     const placeName = document.createElement('h3')
     placeName.textContent = el.name;
     const starDiv = document.createElement('div');
@@ -402,5 +403,4 @@ function deleteItem(id, name) {
         item.parentElement.removeChild(likeContainer[index]);
       }
     })
-
   }

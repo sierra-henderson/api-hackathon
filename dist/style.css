@@ -369,3 +369,56 @@ nav i:hover {
 .hidden {
   display: none;
 }
+
+@media only screen and (max-width: 450px) {
+  .search-bar {
+    flex-direction: column;
+  }
+
+  .hero input {
+    width: 70vw;
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+
+   .city-page-hero h1 {
+    font-size: 3rem;
+  }
+
+  .categories {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .categories a {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+
+  #map {
+    width: 90%;
+  }
+
+  .first-row {
+    flex-direction: column;
+  }
+}
+
+@media only screen and (max-width: 850px) and (orientation: landscape) {
+  .hero {
+    height: 100vh;
+  }
+  .hero input, .hero button {
+    height: 35px;
+  }
+
+  .about {
+    height: auto;
+    padding: 20px 10px;
+  }
+
+  nav {
+    padding: 15px;
+  }
+}
