@@ -3,7 +3,7 @@ let map = null;
 let service = null;
 const markers = [];
 let searchTerm = null;
-const likesArr = []
+const likesArr = localStorage.getItem("likes") ? JSON.parse(localStorage.getItem("likes")) : {}
 let latlang = null;
 let currentSelectedRestaurant = [];
 const header = document.querySelector('.city-page-hero h1');
@@ -22,10 +22,12 @@ const likesBar = document.getElementById('likesBar');
 const likesCityHeader = document.getElementById('likesCityHeader')
 const categories = document.querySelector('.categories')
 const cityPageHeader = document.querySelector('.city-page-hero h1');
+const fullLikesPage = document.querySelector('.full-likes-page');
+const cityPreviewContainer = document.querySelector('.city-preview-container');
 const likesPage = document.querySelector('.likes-page');
 const mapContainer = document.getElementById('map');
 const likesList = document.querySelector('.likesList');
-const backToCityButton = document.getElementById('backToCity');
+const clickForHome = document.querySelectorAll('.clickForHome')
 
 // Queries for modal
 const modalImage = document.querySelector('.modal-image')
@@ -53,11 +55,11 @@ cookingClassesButton.addEventListener('click', function () {
 
 closeModalButton.addEventListener('click', closeModal)
 
-likesBar.addEventListener('click', loadLikesPage);
+likesBar.addEventListener('click', loadFullLikesPage);
 
 likeButton.addEventListener('click', addToLikes);
 
-backToCityButton.addEventListener('click', goBackToCityPage);
+clickForHome.forEach(el => el.addEventListener('click', backToHomepage))
 
 function recordQuery() {
   searchTerm = searchBar.value;
@@ -78,6 +80,7 @@ function searchQuery(query) {
 }
 
 function searchSuccess(data) {
+  searchBar.value = ''
   const request = {
     placeId: data,
     fields: ['formatted_address', 'geometry']
@@ -275,25 +278,61 @@ function addToLikes() {
     image: data.image_url,
     coordinates: data.coordinates,
     city: cityPageHeader.textContent,
-    north: (latlang.viewport.Ya.i + latlang.viewport.Ya.j) / 2,
+    north: (latlang.viewport.Za.i + latlang.viewport.Za.j) / 2,
     east: (latlang.viewport.Ua.i + latlang.viewport.Ua.j) / 2,
     id: data.id
   }
-  if (!likesArr.some(el => data.id === el.id)) {
-    likesArr.push(likeObj);
+  const cityShort = cityPageHeader.textContent.substring(0, cityPageHeader.textContent.indexOf(","))
+  console.log(cityShort)
+  if (!likesArr[cityShort]) {
+    likesArr[cityShort] = []
+  }
+  if (!likesArr[cityShort].some(el => data.id === el.id)) {
+    likesArr[cityShort].push(likeObj);
+    localStorage.setItem('likes', JSON.stringify(likesArr))
   }
 }
 
-function loadLikesPage() {
-  likesCityHeader.textContent = likesArr[0].city;
-  cityPage.classList.add('hidden');
+function loadFullLikesPage() {
+  cityPage.classList.add('hidden')
+  fullLikesPage.classList.remove('hidden')
+  if (cityPreviewContainer.children.length > 0) {
+    while (cityPreviewContainer.children.length > 0) {
+      cityPreviewContainer.removeChild(cityPreviewContainer.children[0]);
+    }
+  }
+  for (const city in likesArr) {
+    if (likesArr[city].length === 0) {
+      delete likesArr[city]
+    } else {
+      const cityImage = document.createElement('div')
+      cityImage.className = 'city-preview-image'
+      cityImage.style.backgroundImage = `url(${likesArr[city][0].image})`;
+      const h3 = document.createElement('h3')
+      h3.textContent = likesArr[city][0].city
+      const h5 = document.createElement('h5')
+      h5.textContent = likesArr[city].length === 1 ? `${likesArr[city].length} Business` : `${likesArr[city].length} Businesses`
+      const textDiv = document.createElement('div')
+      textDiv.append(h3, h5)
+      const cityPreview = document.createElement('div')
+      cityPreview.className = 'city-preview'
+      cityPreview.append(cityImage, textDiv)
+      cityPreviewContainer.append(cityPreview)
+      cityPreview.addEventListener('click', () => loadLikesPage(city))
+    }
+  }
+}
+
+function loadLikesPage(city) {
+  likesCityHeader.textContent = likesArr[city][0].city;
+  fullLikesPage.classList.add('hidden');
   likesPage.classList.remove('hidden');
   if (likesList.children.length > 1) {
     while (likesList.children.length > 1) {
       likesList.removeChild(likesList.children[1]);
     }
   }
-  likesArr.forEach(el => {
+  likesArr[city].forEach(el => {
     const likesPhoto = document.createElement('div');
     likesPhoto.className = 'likes-photo';
     likesPhoto.style.backgroundImage = `url(${el.image})`;
@@ -333,7 +372,7 @@ function loadLikesPage() {
     const deleteItemButton = document.createElement('i');
     deleteItemButton.className = 'fas fa-trash fa-lg';
     deleteItemButton.addEventListener('click', function() {
-      deleteItem(el.id, el.name);
+      deleteItem(city, el.id, el.name);
     });
     deleteButtonContainer.append(deleteItemButton)
     const likesText = document.createElement('div');
@@ -345,8 +384,8 @@ function loadLikesPage() {
     likesList.append(likeContainer);
 
   })
-  console.log(likesArr);
-  initMap(likesArr)
+  console.log(likesArr[city]);
+  initMap(likesArr[city])
 }
 
 function initMap(arr) {
@@ -385,18 +424,33 @@ function createMarker(place, infowindow) {
   });
 }
 
-function goBackToCityPage() {
-  likesPage.classList.add('hidden');
-  cityPage.classList.remove('hidden');
+function backToHomepage() {
+  console.log('homepage triggered!')
+  if (!likesPage.className.includes('hidden')) {
+    likesPage.classList.add('hidden')
+  }
+  if (!fullLikesPage.className.includes('hidden')) {
+    fullLikesPage.classList.add('hidden')
+  }
+  if (!cityPage.className.includes('hidden')) {
+    cityPage.classList.add('hidden')
+  }
+  landingPage.classList.remove('hidden')
 }
 
-function deleteItem(id, name) {
-  likesArr.forEach((el, i) => {
+function deleteItem(city, id, name) {
+  likesArr[city].forEach((el, i) => {
     if (el.id === id) {
-      likesArr.splice(i, 1);
+      likesArr[city].splice(i, 1);
       markers[i].setMap(null);
     }
   })
+  localStorage.setItem('likes', JSON.stringify(likesArr))
+  if (likesArr[city].length === 0) {
+    const noSavedItems = document.createElement('p')
+    noSavedItems.textContent = 'No saved items'
+    likesList.append(noSavedItems)
+  }
   const likeContainer = document.querySelectorAll('.like-container')
     likeContainer.forEach((item, index) => {
       if (item.querySelector('h3').textContent === name) {
