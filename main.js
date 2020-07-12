@@ -10,6 +10,7 @@ const header = document.querySelector('.city-page-hero h1');
 const landingPage = document.querySelector('.landing-page');
 const cityPage = document.querySelector('.city-page')
 const results = document.querySelector('.results')
+const searchDiv = document.querySelector('.search-bar')
 const searchBar = document.getElementById('searchBar');
 const searchButton = document.getElementById('searchButton');
 const cityPageHero = document.querySelector('.city-page-hero');
@@ -67,6 +68,7 @@ function recordQuery() {
 }
 
 function searchQuery(query) {
+  startLoading()
   const request = {
     query: query,
     fields: ['name', 'place_id']
@@ -79,8 +81,21 @@ function searchQuery(query) {
   })
 }
 
+function startLoading() {
+  const loader = document.createElement('img')
+  loader.setAttribute("id", "loader")
+  loader.setAttribute("src", "./images/loader.gif")
+  landingPageHero.append(loader)
+}
+
+function clearLoading() {
+  const loader = document.querySelector('#loader');
+  if (loader) {
+    loader.parentElement.removeChild(loader);
+  }
+}
+
 function searchSuccess(data) {
-  searchBar.value = ''
   const request = {
     placeId: data,
     fields: ['formatted_address', 'geometry']
@@ -97,21 +112,23 @@ function searchSuccess(data) {
           Authorization: 'Bearer ' + yelpKey
         },
         success: function() {
+          clearLoading()
           landingPage.classList.add('hidden');
           cityPage.classList.remove('hidden');
+          searchBar.value = ''
           header.textContent = place.formatted_address;
           latlang = place.geometry;
           createImage(place.formatted_address);
           yelpQuery(['restaurants'])
         },
         error: function (err) {
+          clearLoading()
           const div = document.createElement('div');
           div.className = 'error-modal'
           div.textContent = 'Sorry! This city is not supported by food.ie at this time.'
           landingPageHero.append(div);
         }
       })
-
     }
   }
 }
