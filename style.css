@@ -288,21 +288,42 @@ nav i:hover {
   margin-bottom: 10px;
 }
 
+.city-preview {
+  display: flex;
+  padding: 20px;
+  align-items: center;
+}
+
+.city-preview h3 {
+  font-size: 1.5rem;
+}
+
+.city-preview-image {
+  width: 150px;
+  height: 150px;
+  background-size: cover;
+  border-radius: 0.5rem;
+  margin-right: 1rem;
+}
+
 .row.like {
   align-items: center;
 }
 
-.likes-page h2 {
+.likes-page h2,
+.full-likes-page h2 {
   font-family: Hillray;
   padding: 20px;
 }
 
-.likes-page h1 {
+.likes-page h1,
+.full-likes-page h1 {
   font-family: Hillray;
   text-align: center;
 }
 
-.likesList {
+.likesList,
+.city-preview-container {
   width: 85%;
   max-width: 900px;
   margin: 0 auto;
