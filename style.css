@@ -8,8 +8,11 @@
 .likeButton i,
 .likesBar i,
 .likes-text i,
-#backToCity,
-#closeModalButton {
+#backToLikes,
+#closeModalButton,
+.city-preview,
+.clickForHome,
+#likesBar {
   cursor: pointer;
 }
 
@@ -100,6 +103,10 @@
 .about h2 {
   font-family: Hillray;
   margin-bottom: 30px;
+}
+
+.about p {
+  margin: 0 0.5rem;
 }
 
 nav {
@@ -295,8 +302,14 @@ nav i:hover {
 
 .city-preview {
   display: flex;
-  padding: 20px;
+  margin: 0.5rem;
+  padding: 1rem;
   align-items: center;
+}
+
+.city-preview:hover {
+  background-color: #efefef;
+  border-radius: 0.5rem;
 }
 
 .city-preview h3 {
@@ -373,11 +386,11 @@ nav i:hover {
   color: black;
 }
 
-.city-button-container {
+.likes-button-container {
   text-align: center;
 }
 
-#backToCity {
+#backToLikes {
   color: white;
   background-color: #D94D2E;
   border-radius: 100px;
@@ -388,7 +401,7 @@ nav i:hover {
   margin-bottom: 20px
 }
 
-#backToCity:hover {
+#backToLikes:hover {
   background-color: #D92D07;
 }
 
@@ -405,6 +418,10 @@ nav i:hover {
     width: 70vw;
     margin-right: 0;
     margin-bottom: 1rem;
+  }
+
+  .about h2 {
+    margin-bottom: 0.5rem;
   }
 
    .city-page-hero h1 {
@@ -429,6 +446,28 @@ nav i:hover {
   .first-row {
     flex-direction: column;
   }
+
+  .city-preview h3 {
+    font-size: 1.25rem
+  }
+
+  .city-preview-image {
+    height: 90px;
+    width: 90px;
+  }
+}
+
+@media only screen and (max-width: 600px) and (orientation: landscape) {
+  .categories {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .categories a {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
 }
 
 @media only screen and (max-width: 850px) and (orientation: landscape) {
@@ -437,6 +476,10 @@ nav i:hover {
   }
   .hero input, .hero button {
     height: 35px;
+  }
+
+  .city-page-hero {
+    height: 85vh;
   }
 
   .about {

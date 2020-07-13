@@ -5,6 +5,7 @@ const markers = [];
 let searchTerm = null;
 const likesArr = localStorage.getItem("likes") ? JSON.parse(localStorage.getItem("likes")) : {}
 let latlang = null;
+let autocomplete = null;
 let currentSelectedRestaurant = [];
 const header = document.querySelector('.city-page-hero h1');
 const landingPage = document.querySelector('.landing-page');
@@ -28,7 +29,8 @@ const cityPreviewContainer = document.querySelector('.city-preview-container');
 const likesPage = document.querySelector('.likes-page');
 const mapContainer = document.getElementById('map');
 const likesList = document.querySelector('.likesList');
-const clickForHome = document.querySelectorAll('.clickForHome')
+const clickForHome = document.querySelectorAll('.clickForHome');
+const likesPageButton = document.getElementById('backToLikes')
 
 // Queries for modal
 const modalImage = document.querySelector('.modal-image')
@@ -61,6 +63,22 @@ likesBar.addEventListener('click', loadFullLikesPage);
 likeButton.addEventListener('click', addToLikes);
 
 clickForHome.forEach(el => el.addEventListener('click', backToHomepage))
+
+likesPageButton.addEventListener('click', loadFullLikesPage)
+
+function setAutocomplete() {
+  const defaultBounds = new google.maps.LatLngBounds(
+    new google.maps.LatLng(-90, 180),
+    new google.maps.LatLng(90, 180));
+
+  const input = document.getElementById('searchBar');
+  const options = {
+    bounds: defaultBounds,
+    types: ['(cities)']
+  };
+
+  autocomplete = new google.maps.places.Autocomplete(input, options);
+}
 
 function recordQuery() {
   searchTerm = searchBar.value;
@@ -112,14 +130,18 @@ function searchSuccess(data) {
           Authorization: 'Bearer ' + yelpKey
         },
         success: function() {
-          clearLoading()
-          landingPage.classList.add('hidden');
-          cityPage.classList.remove('hidden');
           searchBar.value = ''
+          const errorModal = document.querySelector('.error-modal')
+          if (errorModal) {
+            errorModal.parentElement.removeChild(errorModal)
+          }
           header.textContent = place.formatted_address;
           latlang = place.geometry;
           createImage(place.formatted_address);
           yelpQuery(['restaurants'])
+          clearLoading()
+          landingPage.classList.add('hidden');
+          cityPage.classList.remove('hidden');
         },
         error: function (err) {
           clearLoading()
@@ -129,18 +151,24 @@ function searchSuccess(data) {
           landingPageHero.append(div);
         }
       })
-    }
+     }
   }
 }
 
 function createImage(place) {
+  let shortenedSearch;
+  if (searchTerm.includes("Portland, ME")) {
+    shortenedSearch = place
+  } else {
+    shortenedSearch = place.substring(0, place.indexOf(","))
+  }
   $.ajax({
     method: "GET",
     headers: {
       Authorization: "Client-ID " + unsplashKey,
       'Accept-Version': 'v1'
     },
-    url: `https://api.unsplash.com/search/photos?query=${searchTerm}&orientation=landscape&client_id=wJINoYlAErEt2iN9vdlMlVRA0hQS4N4hSz0mYyt0SRA`,
+    url: `https://api.unsplash.com/search/photos?query=${shortenedSearch}&orientation=landscape&client_id=wJINoYlAErEt2iN9vdlMlVRA0hQS4N4hSz0mYyt0SRA`,
     success: photoSuccess,
     fail: photoFail
   })
@@ -151,7 +179,7 @@ function photoSuccess(photo) {
 }
 
 function photoFail(err) {
-  console.log(err);
+  console.error(err);
 }
 
 function closeModal() {
@@ -189,7 +217,7 @@ function yelpQuery(arr) {
           }
         },
         error: function (err) {
-          console.log("ErRoR:", err)
+          console.error("Error:", err)
         }
       })
   })
@@ -266,6 +294,17 @@ function popModal(data, title) {
   data.categories.forEach(el => {
     categories += " " + el.title + ","
   })
+  const cityShort = cityPageHeader.textContent.substring(0, cityPageHeader.textContent.indexOf(","))
+  if (likesArr[cityShort]) {
+    const businessLiked = likesArr[cityShort].filter(like => like.id === data.id)
+    if (businessLiked.length > 0) {
+      likeButton.className = 'fas fa-heart fa-2x'
+    } else {
+      likeButton.className = 'far fa-heart fa-2x'
+    }
+  } else {
+    likeButton.className = 'far fa-heart fa-2x'
+  }
   const newCategories = categories.replace(/,$/, "");
   category.textContent = newCategories
   if (address.children.length > 0) {
@@ -300,7 +339,6 @@ function addToLikes() {
     id: data.id
   }
   const cityShort = cityPageHeader.textContent.substring(0, cityPageHeader.textContent.indexOf(","))
-  console.log(cityShort)
   if (!likesArr[cityShort]) {
     likesArr[cityShort] = []
   }
@@ -311,7 +349,12 @@ function addToLikes() {
 }
 
 function loadFullLikesPage() {
-  cityPage.classList.add('hidden')
+  if (!cityPage.className.includes('hidden')) {
+    cityPage.classList.add('hidden')
+  }
+  if (!likesPage.className.includes('hidden')) {
+    likesPage.classList.add('hidden')
+  }
   fullLikesPage.classList.remove('hidden')
   if (cityPreviewContainer.children.length > 0) {
     while (cityPreviewContainer.children.length > 0) {
@@ -401,7 +444,6 @@ function loadLikesPage(city) {
     likesList.append(likeContainer);
 
   })
-  console.log(likesArr[city]);
   initMap(likesArr[city])
 }
 
@@ -442,7 +484,6 @@ function createMarker(place, infowindow) {
 }
 
 function backToHomepage() {
-  console.log('homepage triggered!')
   if (!likesPage.className.includes('hidden')) {
     likesPage.classList.add('hidden')
   }
@@ -475,3 +516,5 @@ function deleteItem(city, id, name) {
       }
     })
   }
+
+setAutocomplete()
