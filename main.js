@@ -30,6 +30,7 @@ const likesPage = document.querySelector('.likes-page');
 const mapContainer = document.getElementById('map');
 const likesList = document.querySelector('.likesList');
 const clickForHome = document.querySelectorAll('.clickForHome');
+const likesPageButton = document.getElementById('backToLikes')
 
 // Queries for modal
 const modalImage = document.querySelector('.modal-image')
@@ -62,6 +63,8 @@ likesBar.addEventListener('click', loadFullLikesPage);
 likeButton.addEventListener('click', addToLikes);
 
 clickForHome.forEach(el => el.addEventListener('click', backToHomepage))
+
+likesPageButton.addEventListener('click', loadFullLikesPage)
 
 function setAutocomplete() {
   const defaultBounds = new google.maps.LatLngBounds(
@@ -127,14 +130,18 @@ function searchSuccess(data) {
           Authorization: 'Bearer ' + yelpKey
         },
         success: function() {
-          clearLoading()
-          landingPage.classList.add('hidden');
-          cityPage.classList.remove('hidden');
           searchBar.value = ''
+          const errorModal = document.querySelector('.error-modal')
+          if (errorModal) {
+            errorModal.parentElement.removeChild(errorModal)
+          }
           header.textContent = place.formatted_address;
           latlang = place.geometry;
           createImage(place.formatted_address);
           yelpQuery(['restaurants'])
+          clearLoading()
+          landingPage.classList.add('hidden');
+          cityPage.classList.remove('hidden');
         },
         error: function (err) {
           clearLoading()
@@ -151,9 +158,9 @@ function searchSuccess(data) {
 function createImage(place) {
   let shortenedSearch;
   if (searchTerm.includes("Portland, ME")) {
-    shortenedSearch = searchTerm
+    shortenedSearch = place
   } else {
-    shortenedSearch = searchTerm.substring(0, searchTerm.indexOf(","))
+    shortenedSearch = place.substring(0, place.indexOf(","))
   }
   $.ajax({
     method: "GET",
@@ -342,7 +349,12 @@ function addToLikes() {
 }
 
 function loadFullLikesPage() {
-  cityPage.classList.add('hidden')
+  if (!cityPage.className.includes('hidden')) {
+    cityPage.classList.add('hidden')
+  }
+  if (!likesPage.className.includes('hidden')) {
+    likesPage.classList.add('hidden')
+  }
   fullLikesPage.classList.remove('hidden')
   if (cityPreviewContainer.children.length > 0) {
     while (cityPreviewContainer.children.length > 0) {
