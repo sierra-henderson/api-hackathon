@@ -1,6 +1,8 @@
 # food.ie
 A front-end JavaScript application that utilizes the Yelp API, Unsplash API, and Google Maps API to help a user find off-the-beaten path restaurants and food related excursions while traveling.
 
+[Live Site](https://food.ie.sierrahenderson.com/)
+
 ## Features
 1. User can search by city
 2. User can view a city page that includes restaurants, cooking classes, and food tours.
