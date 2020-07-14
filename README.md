@@ -24,7 +24,8 @@ A front-end JavaScript application that utilizes the Yelp API, Unsplash API, and
 ``` git clone https://github.com/sierra-henderson/foodie.git
     cd foodie
 ```
-2. Access application from `index.html` in code editor
+2. Get API keys from [Yelp](https://www.yelp.com/fusion), [Unsplash](https://unsplash.com/developers), and [Google Maps](https://developers.google.com/maps/documentation)
+3. Access application from `index.html` in code editor
 
 ## Lessons Learned
 * Creating a single page application using vanilla JavaScript
