@@ -31,8 +31,6 @@ const mapContainer = document.getElementById('map');
 const likesList = document.querySelector('.likesList');
 const clickForHome = document.querySelectorAll('.clickForHome');
 const likesPageButton = document.getElementById('backToLikes')
-
-// Queries for modal
 const modalImage = document.querySelector('.modal-image')
 const businessName = document.getElementById('name')
 const starsContainer = document.querySelector('.stars')
@@ -246,12 +244,6 @@ function makeCards(type, data) {
   resultsHeader.className = 'results-header'
   results.append(resultsHeader)
   resultsHeader.append(h2)
-  // if (title === 'Restaurants') {
-  //   const filterButton = document.createElement('button');
-  //   filterButton.textContent = 'Filter'
-  //   resultsHeader.append(filterButton);
-  //   filterButton.addEventListener('click', filterModal);
-  // }
   results.append(resultsHeader)
   data.forEach(el => {
     const cardImageDiv = document.createElement('div')
