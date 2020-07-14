@@ -353,36 +353,38 @@ function addToLikes() {
 }
 
 function loadFullLikesPage() {
-  if (!cityPage.className.includes('hidden')) {
-    cityPage.classList.add('hidden')
-  }
-  if (!likesPage.className.includes('hidden')) {
-    likesPage.classList.add('hidden')
-  }
-  fullLikesPage.classList.remove('hidden')
-  if (cityPreviewContainer.children.length > 0) {
-    while (cityPreviewContainer.children.length > 0) {
-      cityPreviewContainer.removeChild(cityPreviewContainer.children[0]);
+  if (Object.entries(likesArr).length !== 0) {
+    if (!cityPage.className.includes('hidden')) {
+      cityPage.classList.add('hidden')
     }
-  }
-  for (const city in likesArr) {
-    if (likesArr[city].length === 0) {
-      delete likesArr[city]
-    } else {
-      const cityImage = document.createElement('div')
-      cityImage.className = 'city-preview-image'
-      cityImage.style.backgroundImage = `url(${likesArr[city][0].image})`;
-      const h3 = document.createElement('h3')
-      h3.textContent = likesArr[city][0].city
-      const h5 = document.createElement('h5')
-      h5.textContent = likesArr[city].length === 1 ? `${likesArr[city].length} Business` : `${likesArr[city].length} Businesses`
-      const textDiv = document.createElement('div')
-      textDiv.append(h3, h5)
-      const cityPreview = document.createElement('div')
-      cityPreview.className = 'city-preview'
-      cityPreview.append(cityImage, textDiv)
-      cityPreviewContainer.append(cityPreview)
-      cityPreview.addEventListener('click', () => loadLikesPage(city))
+    if (!likesPage.className.includes('hidden')) {
+      likesPage.classList.add('hidden')
+    }
+    fullLikesPage.classList.remove('hidden')
+    if (cityPreviewContainer.children.length > 0) {
+      while (cityPreviewContainer.children.length > 0) {
+        cityPreviewContainer.removeChild(cityPreviewContainer.children[0]);
+      }
+    }
+    for (const city in likesArr) {
+      if (likesArr[city].length === 0) {
+        delete likesArr[city]
+      } else {
+        const cityImage = document.createElement('div')
+        cityImage.className = 'city-preview-image'
+        cityImage.style.backgroundImage = `url(${likesArr[city][0].image})`;
+        const h3 = document.createElement('h3')
+        h3.textContent = likesArr[city][0].city
+        const h5 = document.createElement('h5')
+        h5.textContent = likesArr[city].length === 1 ? `${likesArr[city].length} Business` : `${likesArr[city].length} Businesses`
+        const textDiv = document.createElement('div')
+        textDiv.append(h3, h5)
+        const cityPreview = document.createElement('div')
+        cityPreview.className = 'city-preview'
+        cityPreview.append(cityImage, textDiv)
+        cityPreviewContainer.append(cityPreview)
+        cityPreview.addEventListener('click', () => loadLikesPage(city))
+      }
     }
   }
 }
