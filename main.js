@@ -82,7 +82,10 @@ function setAutocomplete() {
 
 function recordQuery() {
   searchTerm = searchBar.value;
-  searchQuery(searchTerm);
+  if (searchTerm !== '' && searchTerm !== ' ') {
+    searchButton.disabled = true;
+    searchQuery(searchTerm);
+  }
 }
 
 function searchQuery(query) {
@@ -130,6 +133,7 @@ function searchSuccess(data) {
           Authorization: 'Bearer ' + yelpKey
         },
         success: function() {
+          searchButton.disabled = false
           searchBar.value = ''
           const errorModal = document.querySelector('.error-modal')
           if (errorModal) {
