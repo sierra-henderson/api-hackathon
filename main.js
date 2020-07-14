@@ -3,7 +3,7 @@ let map = null;
 let service = null;
 const markers = [];
 let searchTerm = null;
-const likesArr = localStorage.getItem("likes") ? JSON.parse(localStorage.getItem("likes")) : {}
+const fullLikesList = localStorage.getItem("likes") ? JSON.parse(localStorage.getItem("likes")) : {}
 let latlang = null;
 let autocomplete = null;
 let currentSelectedRestaurant = [];
@@ -299,8 +299,8 @@ function popModal(data, title) {
     categories += " " + el.title + ","
   })
   const cityShort = cityPageHeader.textContent.substring(0, cityPageHeader.textContent.indexOf(","))
-  if (likesArr[cityShort]) {
-    const businessLiked = likesArr[cityShort].filter(like => like.id === data.id)
+  if (fullLikesList[cityShort]) {
+    const businessLiked = fullLikesList[cityShort].filter(like => like.id === data.id)
     if (businessLiked.length > 0) {
       likeButton.className = 'fas fa-heart fa-2x'
     } else {
@@ -343,17 +343,17 @@ function addToLikes() {
     id: data.id
   }
   const cityShort = cityPageHeader.textContent.substring(0, cityPageHeader.textContent.indexOf(","))
-  if (!likesArr[cityShort]) {
-    likesArr[cityShort] = []
+  if (!fullLikesList[cityShort]) {
+    fullLikesList[cityShort] = []
   }
-  if (!likesArr[cityShort].some(el => data.id === el.id)) {
-    likesArr[cityShort].push(likeObj);
-    localStorage.setItem('likes', JSON.stringify(likesArr))
+  if (!fullLikesList[cityShort].some(el => data.id === el.id)) {
+    fullLikesList[cityShort].push(likeObj);
+    localStorage.setItem('likes', JSON.stringify(fullLikesList))
   }
 }
 
 function loadFullLikesPage() {
-  if (Object.entries(likesArr).length !== 0) {
+  if (Object.entries(fullLikesList).length !== 0) {
     if (!cityPage.className.includes('hidden')) {
       cityPage.classList.add('hidden')
     }
@@ -366,17 +366,17 @@ function loadFullLikesPage() {
         cityPreviewContainer.removeChild(cityPreviewContainer.children[0]);
       }
     }
-    for (const city in likesArr) {
-      if (likesArr[city].length === 0) {
-        delete likesArr[city]
+    for (const city in fullLikesList) {
+      if (fullLikesList[city].length === 0) {
+        delete fullLikesList[city]
       } else {
         const cityImage = document.createElement('div')
         cityImage.className = 'city-preview-image'
-        cityImage.style.backgroundImage = `url(${likesArr[city][0].image})`;
+        cityImage.style.backgroundImage = `url(${fullLikesList[city][0].image})`;
         const h3 = document.createElement('h3')
-        h3.textContent = likesArr[city][0].city
+        h3.textContent = fullLikesList[city][0].city
         const h5 = document.createElement('h5')
-        h5.textContent = likesArr[city].length === 1 ? `${likesArr[city].length} Business` : `${likesArr[city].length} Businesses`
+        h5.textContent = fullLikesList[city].length === 1 ? `${fullLikesList[city].length} Business` : `${fullLikesList[city].length} Businesses`
         const textDiv = document.createElement('div')
         textDiv.append(h3, h5)
         const cityPreview = document.createElement('div')
@@ -390,7 +390,7 @@ function loadFullLikesPage() {
 }
 
 function loadLikesPage(city) {
-  likesCityHeader.textContent = likesArr[city][0].city;
+  likesCityHeader.textContent = fullLikesList[city][0].city;
   fullLikesPage.classList.add('hidden');
   likesPage.classList.remove('hidden');
   if (likesList.children.length > 1) {
@@ -398,7 +398,7 @@ function loadLikesPage(city) {
       likesList.removeChild(likesList.children[1]);
     }
   }
-  likesArr[city].forEach(el => {
+  fullLikesList[city].forEach(el => {
     const likesPhoto = document.createElement('div');
     likesPhoto.className = 'likes-photo';
     likesPhoto.style.backgroundImage = `url(${el.image})`;
@@ -450,7 +450,7 @@ function loadLikesPage(city) {
     likesList.append(likeContainer);
 
   })
-  initMap(likesArr[city])
+  initMap(fullLikesList[city])
 }
 
 function initMap(arr) {
@@ -503,14 +503,14 @@ function backToHomepage() {
 }
 
 function deleteItem(city, id, name) {
-  likesArr[city].forEach((el, i) => {
+  fullLikesList[city].forEach((el, i) => {
     if (el.id === id) {
-      likesArr[city].splice(i, 1);
+      fullLikesList[city].splice(i, 1);
       markers[i].setMap(null);
     }
   })
-  localStorage.setItem('likes', JSON.stringify(likesArr))
-  if (likesArr[city].length === 0) {
+  localStorage.setItem('likes', JSON.stringify(fullLikesList))
+  if (fullLikesList[city].length === 0) {
     const noSavedItems = document.createElement('p')
     noSavedItems.textContent = 'No saved items'
     likesList.append(noSavedItems)
