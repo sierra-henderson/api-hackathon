@@ -153,6 +153,7 @@ function searchSuccess(data) {
           div.className = 'error-modal'
           div.textContent = 'Sorry! This city is not supported by food.ie at this time.'
           landingPageHero.append(div);
+          searchButton.disabled = false
         }
       })
      }
