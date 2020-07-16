@@ -56,6 +56,8 @@ cookingClassesButton.addEventListener('click', function () {
 
 closeModalButton.addEventListener('click', closeModal)
 
+modalOverlay.addEventListener('click', closeModal)
+
 likesBar.addEventListener('click', loadFullLikesPage);
 
 likeButton.addEventListener('click', addToLikes);
@@ -189,8 +191,11 @@ function photoFail(err) {
   console.error(err);
 }
 
-function closeModal() {
-  modalOverlay.classList.add('hidden');
+function closeModal(event) {
+  if (event.target.className.indexOf("closeModalButton") !== -1 || event.target.className.indexOf("modal-overlay") !== -1) {
+    console.log(event.target)
+    modalOverlay.classList.add('hidden');
+  }
 }
 
 function yelpQuery(arr) {
