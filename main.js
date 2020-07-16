@@ -96,11 +96,26 @@ function searchQuery(query) {
   service.findPlaceFromQuery(request, function(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       searchSuccess(results[0].place_id);
+    } else {
+      searchFailure()
     }
   })
 }
 
+function searchFailure() {
+  clearLoading()
+  const div = document.createElement('div');
+  div.className = 'error-modal'
+  div.textContent = 'Sorry! This city is not supported by food.ie at this time.'
+  landingPageHero.append(div);
+  searchButton.disabled = false
+}
+
 function startLoading() {
+  const errorModal = document.querySelector('.error-modal')
+  if (errorModal) {
+    errorModal.parentElement.removeChild(errorModal)
+  }
   const loader = document.createElement('img')
   loader.setAttribute("id", "loader")
   loader.setAttribute("src", "./images/loader.gif")
@@ -133,10 +148,6 @@ function searchSuccess(data) {
         success: function() {
           searchButton.disabled = false
           searchBar.value = ''
-          const errorModal = document.querySelector('.error-modal')
-          if (errorModal) {
-            errorModal.parentElement.removeChild(errorModal)
-          }
           header.textContent = place.formatted_address;
           latlang = place.geometry;
           createImage(place.formatted_address);
@@ -145,14 +156,7 @@ function searchSuccess(data) {
           landingPage.classList.add('hidden');
           cityPage.classList.remove('hidden');
         },
-        error: function (err) {
-          clearLoading()
-          const div = document.createElement('div');
-          div.className = 'error-modal'
-          div.textContent = 'Sorry! This city is not supported by food.ie at this time.'
-          landingPageHero.append(div);
-          searchButton.disabled = false
-        }
+        error: searchFailure
       })
      }
   }
@@ -253,12 +257,15 @@ function makeCards(type, data) {
     cardTextDiv.className = 'card-text'
     const h3 = document.createElement('h3')
     h3.textContent = el.name;
+    const h3Div = document.createElement('div')
+    h3Div.className = 'card-text-header'
+    h3Div.append(h3)
     const button = document.createElement('button')
     button.addEventListener('click', function() {
       popModal(el, title)
     })
     button.textContent = 'More Info'
-    cardTextDiv.append(h3, button);
+    cardTextDiv.append(h3Div, button);
     const cardDiv = document.createElement('div')
     cardDiv.className = 'card'
     cardDiv.append(cardImageDiv, cardTextDiv);
