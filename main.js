@@ -9,6 +9,7 @@ let autocomplete = null;
 let currentSelectedRestaurant = [];
 const header = document.querySelector('.city-page-hero h1');
 const landingPage = document.querySelector('.landing-page');
+const homeLikesButton = document.querySelector('.home-likes-button');
 const cityPage = document.querySelector('.city-page')
 const results = document.querySelector('.results')
 const searchDiv = document.querySelector('.search-bar')
@@ -60,13 +61,17 @@ modalOverlay.addEventListener('click', closeModal)
 
 likesBar.addEventListener('click', loadFullLikesPage);
 
-likeButton.addEventListener('click', addToLikes);
+likeButton.addEventListener('click', handleLikes);
 
 clickForHome.forEach(el => el.addEventListener('click', backToHomepage))
 
 likesPageButton.addEventListener('click', loadFullLikesPage)
 
 function setAutocomplete() {
+  if (Object.entries(fullLikesList).length !== 0) {
+    homeLikesButton.textContent = 'Just take me to my likes'
+    homeLikesButton.addEventListener('click', loadFullLikesPage)
+  }
   const defaultBounds = new google.maps.LatLngBounds(
     new google.maps.LatLng(-90, 180),
     new google.maps.LatLng(90, 180));
@@ -193,7 +198,6 @@ function photoFail(err) {
 
 function closeModal(event) {
   if (event.target.className.indexOf("closeModalButton") !== -1 || event.target.className.indexOf("modal-overlay") !== -1) {
-    console.log(event.target)
     modalOverlay.classList.add('hidden');
   }
 }
@@ -266,15 +270,15 @@ function makeCards(type, data) {
     h3Div.className = 'card-text-header'
     h3Div.append(h3)
     const button = document.createElement('button')
-    button.addEventListener('click', function() {
-      popModal(el, title)
-    })
     button.textContent = 'More Info'
     cardTextDiv.append(h3Div, button);
     const cardDiv = document.createElement('div')
     cardDiv.className = 'card'
     cardDiv.append(cardImageDiv, cardTextDiv);
     results.append(cardDiv);
+    cardDiv.addEventListener('click', function () {
+      popModal(el, title)
+    })
   })
 }
 
@@ -329,6 +333,14 @@ function popModal(data, title) {
   currentSelectedRestaurant = [data, title]
 }
 
+function handleLikes() {
+  if (likeButton.className === 'fas fa-heart fa-2x') {
+    deleteFromLikes()
+  } else {
+    addToLikes()
+  }
+}
+
 function addToLikes() {
   likeButton.className = 'fas fa-heart fa-2x'
   const [data, title] = currentSelectedRestaurant
@@ -357,20 +369,39 @@ function addToLikes() {
   }
 }
 
+function deleteFromLikes() {
+  likeButton.className = 'far fa-heart fa-2x'
+  const [data] = currentSelectedRestaurant
+  const cityShort = cityPageHeader.textContent.substring(0, cityPageHeader.textContent.indexOf(","))
+  for(let i = 0; i < fullLikesList[cityShort].length; i++) {
+    if (fullLikesList[cityShort][i].id === data.id) {
+      fullLikesList[cityShort].splice(i, 1);
+      break;
+    }
+  }
+  if (fullLikesList[cityShort].length === 0) {
+    delete fullLikesList[cityShort]
+  }
+  localStorage.setItem('likes', JSON.stringify(fullLikesList))
+}
+
 function loadFullLikesPage() {
+  if (!cityPage.className.includes('hidden')) {
+    cityPage.classList.add('hidden')
+  }
+  if (!likesPage.className.includes('hidden')) {
+    likesPage.classList.add('hidden')
+  }
+  if (!landingPage.className.includes('hidden')) {
+    landingPage.classList.add('hidden')
+  }
+  fullLikesPage.classList.remove('hidden')
+  if (cityPreviewContainer.children.length > 0) {
+    while (cityPreviewContainer.children.length > 0) {
+      cityPreviewContainer.removeChild(cityPreviewContainer.children[0]);
+    }
+  }
   if (Object.entries(fullLikesList).length !== 0) {
-    if (!cityPage.className.includes('hidden')) {
-      cityPage.classList.add('hidden')
-    }
-    if (!likesPage.className.includes('hidden')) {
-      likesPage.classList.add('hidden')
-    }
-    fullLikesPage.classList.remove('hidden')
-    if (cityPreviewContainer.children.length > 0) {
-      while (cityPreviewContainer.children.length > 0) {
-        cityPreviewContainer.removeChild(cityPreviewContainer.children[0]);
-      }
-    }
     for (const city in fullLikesList) {
       if (fullLikesList[city].length === 0) {
         delete fullLikesList[city]
@@ -391,6 +422,11 @@ function loadFullLikesPage() {
         cityPreview.addEventListener('click', () => loadLikesPage(city))
       }
     }
+  } else {
+    const noLikesMessage = document.createElement('p')
+    noLikesMessage.className = 'no-likes-message'
+    noLikesMessage.textContent = 'You have no saved likes'
+    cityPreviewContainer.append(noLikesMessage)
   }
 }
 
@@ -504,22 +540,31 @@ function backToHomepage() {
   if (!cityPage.className.includes('hidden')) {
     cityPage.classList.add('hidden')
   }
+  if (Object.entries(fullLikesList).length === 0 ) {
+    homeLikesButton.textContent = ''
+  } else {
+    homeLikesButton.textContent = 'Just take me to my likes'
+    homeLikesButton.addEventListener('click', loadFullLikesPage)
+  }
   landingPage.classList.remove('hidden')
 }
 
 function deleteItem(city, id, name) {
-  fullLikesList[city].forEach((el, i) => {
-    if (el.id === id) {
+  for (let i = 0; i < fullLikesList[city].length; i++) {
+    if (fullLikesList[city][i].id === id) {
       fullLikesList[city].splice(i, 1);
       markers[i].setMap(null);
+      markers.splice(i, 1)
+      break;
     }
-  })
-  localStorage.setItem('likes', JSON.stringify(fullLikesList))
+  }
   if (fullLikesList[city].length === 0) {
+    delete fullLikesList[city]
     const noSavedItems = document.createElement('p')
     noSavedItems.textContent = 'No saved items'
     likesList.append(noSavedItems)
   }
+  localStorage.setItem('likes', JSON.stringify(fullLikesList))
   const likeContainer = document.querySelectorAll('.like-container')
     likeContainer.forEach((item, index) => {
       if (item.querySelector('h3').textContent === name) {

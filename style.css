@@ -70,6 +70,14 @@
   background-color: rgb(238, 205, 178);
 }
 
+.home-likes-button {
+  cursor: pointer;
+}
+
+.home-likes-button:hover {
+  color: #efefef
+}
+
 #loader {
   height: 3rem;
 }
@@ -273,8 +281,9 @@ nav i:hover {
 
 #closeModalButton {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: -30px;
+  right: -30px;
+  color: white;
 }
 
 .modal-content {
@@ -291,6 +300,11 @@ nav i:hover {
 
 .modal-text {
   padding: 20px 10px;
+}
+
+.stars {
+  width: 105px;
+  text-align: right;
 }
 
 .likeButton i {
@@ -331,6 +345,11 @@ nav i:hover {
   border-radius: 0.5rem;
   margin-right: 1rem;
   background: #D97E4A;
+}
+
+.no-likes-message {
+  margin-top: 2rem;
+  font-size: 1.2rem;
 }
 
 .row.like {
